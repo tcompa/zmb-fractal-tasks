@@ -1,0 +1,10 @@
+# Do not edit - changes here will be overwritten by Copier
+_commit: v0.4.5
+_src_path: gh:fractal-analytics-platform/fractal-tasks-template
+author_email: st.flurin@gmail.com
+author_name: Flurin Sturzenegger
+package_name: zmb_fractal_tasks
+project_name: zmb-fractal-tasks
+project_short_description: A collection of fractal tasks used for varying ZMB projects.
+project_url: ''
+
