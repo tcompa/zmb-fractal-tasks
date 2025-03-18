@@ -135,7 +135,7 @@ def segment_cellpose_simple(
     with open(Path(zarr_url) / "labels" / output_label_name / ".zattrs", "r+") as f:
         json_data = json.load(f)
         json_data["image-label"] = json_data.pop("image_label")
-        json_data["name"] = output_label_name
+        json_data["multiscales"][0]["name"] = output_label_name
         f.seek(0)
         json.dump(json_data, f, indent=4)
         f.truncate()
