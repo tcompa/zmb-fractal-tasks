@@ -1,6 +1,8 @@
 """Segment spot-like particles."""
 
+import json
 from collections.abc import Sequence
+from pathlib import Path
 from typing import Optional
 
 import numpy as np
@@ -127,7 +129,16 @@ def segment_cellpose_simple(
     label_image.consolidate()
 
     # TODO: Add ROI table with bounding boxes of the labels
-    # TODO: fix label .zattrs
+
+    # TODO: fix label .zattrs (wait for ngio update)
+    # QUICK FIX: Manually adjust the label image .zattrs
+    with open(Path(zarr_url) / "labels" / output_label_name / ".zattrs", "r+") as f:
+        json_data = json.load(f)
+        json_data["image-label"] = json_data.pop("image_label")
+        json_data["name"] = output_label_name
+        f.seek(0)
+        json.dump(json_data, f, indent=4)
+        f.truncate()
 
 
 def segment_ROIs(
