@@ -1,4 +1,4 @@
-"""Segment spot-like particles."""
+"""Segment single channel with cellpose."""
 
 import json
 from collections.abc import Sequence
@@ -123,10 +123,10 @@ def segment_cellpose_simple(
         mask[binary] += max_label
         max_label = mask.max()
         label_image.set_roi(patch=mask[None,...], roi=roi)
-    label_image.consolidate()
 
     # Consolidate the segmentation image
     label_image.consolidate()
+    # TODO: Fix consolidation at higher lavels (wait for ngio?)
 
     # TODO: Add ROI table with bounding boxes of the labels
 
