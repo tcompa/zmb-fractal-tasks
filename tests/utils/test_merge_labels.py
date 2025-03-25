@@ -19,7 +19,7 @@ def test_merge_labels(temp_dir):
             / "03"
             / "0"
         ),
-        label_names_to_copy=["wf_2_labels"],
+        label_names_to_copy=["wf_2_labels", "wf_3_labels"],
     )
     merge_labels(
         zarr_url_origin=str(

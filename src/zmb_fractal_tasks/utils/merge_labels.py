@@ -1,5 +1,6 @@
 """Merge labels from one OME-Zarr image to another."""
 
+import logging
 import shutil
 from collections.abc import Sequence
 from pathlib import Path
@@ -56,22 +57,39 @@ def merge_labels(
         label_names_to_copy = label_names_origin
 
     # copy labels
+    new_labels = label_names_target
     for label_name in label_names_to_copy:
         if label_name not in label_names_origin:
             raise ValueError(f"Label {label_name} not found in {zarr_url_origin}.")
-        if label_name not in label_names_target:
+        if label_name not in new_labels:
             # copy label:
-            new_labels = [*label_names_target, label_name]
+            new_labels = [*new_labels, label_name]
             labels_group_target.attrs["labels"] = new_labels
 
             path_origin = Path(zarr_url_origin) / "labels" / label_name
             path_target = Path(zarr_url_target) / "labels" / label_name
+            # sometimes when copying goes wrong, a folder can be created without the
+            # label group. Check for this:
+            if path_target.exists():
+                if overwrite:
+                    logging.warning(
+                        f"Label {label_name} not found in target group, but a folder "
+                        "already exists. Will overwrite the folder."
+                    )
+                    shutil.rmtree(str(path_target))
+                else:
+                    raise ValueError(
+                        f"Label {label_name} not found in target group, but a folder "
+                        "already exists. Set overwrite=True to overwrite the folder."
+                    )
             shutil.copytree(str(path_origin), str(path_target))
         else:
             if overwrite:
                 path_origin = Path(zarr_url_origin) / "labels" / label_name
                 path_target = Path(zarr_url_target) / "labels" / label_name
-                shutil.rmtree(str(path_target))
+                # sometimes the label group can exist without the folder. Check for this
+                if path_target.exists():
+                    shutil.rmtree(str(path_target))
                 shutil.copytree(str(path_origin), str(path_target))
             else:
                 raise ValueError(
