@@ -1,4 +1,4 @@
-"""Segment spot-like particles."""
+"""Fractal task to measure features of labels."""
 
 import logging
 from collections.abc import Sequence
@@ -7,9 +7,7 @@ from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
-
-# import fractal_tasks_core
-from ngio import open_omezarr_container
+from ngio import open_ome_zarr_container
 from ngio.tables import FeatureTable
 from pydantic import validate_call
 from scipy.ndimage import distance_transform_edt
@@ -20,8 +18,6 @@ from zmb_fractal_tasks.from_fractal_tasks_core.channels import (
     ChannelInputModel,
     get_omero_channel_list,
 )
-
-# __OME_NGFF_VERSION__ = fractal_tasks_core.__OME_NGFF_VERSION__
 
 
 @validate_call
@@ -70,7 +66,7 @@ def measure_features(
             Only tested for level 0.
         overwrite: If True, overwrite existing feature table.
     """
-    omezarr = open_omezarr_container(zarr_url)
+    omezarr = open_ome_zarr_container(zarr_url)
     label_image = omezarr.get_label(label_name, path=level)
     if annotation_label_names:
         annotation_label_images = {
@@ -413,7 +409,7 @@ def measure_features_ROI(
     return df.reset_index()
 
 
-# if __name__ == "__main__":
-#     from fractal_tasks_core.tasks._utils import run_fractal_task
+if __name__ == "__main__":
+    from fractal_task_tools.task_wrapper import run_fractal_task
 
-#     run_fractal_task(task_function=segment_particles)
+    run_fractal_task(task_function=measure_features)

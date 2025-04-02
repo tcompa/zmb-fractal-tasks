@@ -29,7 +29,7 @@ def test_task_functions_have_valid_signatures():
                 continue
             function_name = Path(executable).with_suffix("").name
             task_function = _extract_function(
-                    executable, function_name, package_name="test_template"
+                    executable, function_name, package_name="zmb_fractal_tasks"
                     )
             _validate_function_signature(task_function)
 
