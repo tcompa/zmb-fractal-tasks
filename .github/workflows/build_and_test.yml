@@ -50,8 +50,13 @@ jobs:
             echo "__FRACTAL_MANIFEST__.json has not changed."
           fi
 
-      - name: Test core library with pytest
+      - name: Test core library with pytest on ubuntu
+        if: matrix.os == 'ubuntu-22.04'
         run: python -m pytest tests
+
+      - name: Test core library with pytest on windows (excluding fractal-tooling tests)
+        if: matrix.os == 'windows-latest'
+        run: python -m pytest tests --ignore=tests/fractal_tooling
   
   deploy:
     name: Deploy
