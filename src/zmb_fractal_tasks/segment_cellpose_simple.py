@@ -8,7 +8,7 @@ from cellpose import models
 from ngio import open_ome_zarr_container
 from pydantic import validate_call
 
-from zmb_fractal_tasks.normalization_utils import (
+from zmb_fractal_tasks.utils.normalization import (
     CustomNormalizer,
     NormalizedChannelInputModel,
     normalized_image,

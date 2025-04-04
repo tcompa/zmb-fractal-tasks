@@ -12,7 +12,7 @@ from skimage.filters import gaussian
 from skimage.morphology import remove_small_holes
 from skimage.segmentation import watershed
 
-from zmb_fractal_tasks.normalization_utils import (
+from zmb_fractal_tasks.utils.normalization import (
     CustomNormalizer,
     NormalizedChannelInputModel,
     normalized_image,
