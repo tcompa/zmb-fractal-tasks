@@ -19,6 +19,7 @@ def calculate_histograms(
     input_ROI_table: str = "FOV_ROI_table",
     bin_width: float = 1,
     omero_percentiles: Optional[Sequence[float]] = None,
+    histogram_name: str = "channel_histograms",
 ) -> dict:
     """Calculate channel histograms of image.
 

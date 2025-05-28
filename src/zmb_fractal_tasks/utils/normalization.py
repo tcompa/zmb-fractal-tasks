@@ -67,7 +67,7 @@ class CustomNormalizer(BaseModel):
     upper_percentile: Optional[float] = Field(None, ge=0, le=100)
     lower_bound: Optional[int] = None
     upper_bound: Optional[int] = None
-    histogram_name: Optional[str] = None
+    histogram_name: Optional[str] = "channel_histograms"
 
     # TODO: use this pydantic model to check that histograms actually exist
 
@@ -80,7 +80,6 @@ class CustomNormalizer(BaseModel):
         upper_percentile = self.upper_percentile
         lower_bound = self.lower_bound
         upper_bound = self.upper_bound
-        histogram_name = self.histogram_name
 
         # Verify that percentiles are only provided with "custom" or "histogram" mode
         if mode not in ["custom", "histogram"]:
@@ -104,8 +103,6 @@ class CustomNormalizer(BaseModel):
                 raise ValueError(
                     f"Mode='{mode}' but {upper_bound=}. Hint: set mode='custom'."
                 )
-        if mode == "histogram" and histogram_name is None:
-            histogram_name = "channel_histograms"
 
         # The only valid options are:
         # 1. Both percentiles are set and both bounds are unset
