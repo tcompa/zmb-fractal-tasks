@@ -223,6 +223,12 @@
             "title": "Omero Percentiles",
             "type": "array",
             "description": "Percentiles to calculate and add to the omero metadata. If None, no percentiles are calculated."
+          },
+          "histogram_name": {
+            "default": "channel_histograms",
+            "title": "Histogram Name",
+            "type": "string",
+            "description": "Missing description"
           }
         },
         "required": [
@@ -506,14 +512,14 @@
                 "type": "string"
               },
               "lower_percentile": {
-                "maximum": 100.0,
-                "minimum": 0.0,
+                "maximum": 100,
+                "minimum": 0,
                 "title": "Lower Percentile",
                 "type": "number"
               },
               "upper_percentile": {
-                "maximum": 100.0,
-                "minimum": 0.0,
+                "maximum": 100,
+                "minimum": 0,
                 "title": "Upper Percentile",
                 "type": "number"
               },
@@ -524,6 +530,11 @@
               "upper_bound": {
                 "title": "Upper Bound",
                 "type": "integer"
+              },
+              "histogram_name": {
+                "default": "channel_histograms",
+                "title": "Histogram Name",
+                "type": "string"
               }
             },
             "title": "CustomNormalizer",
@@ -662,14 +673,14 @@
                 "type": "string"
               },
               "lower_percentile": {
-                "maximum": 100.0,
-                "minimum": 0.0,
+                "maximum": 100,
+                "minimum": 0,
                 "title": "Lower Percentile",
                 "type": "number"
               },
               "upper_percentile": {
-                "maximum": 100.0,
-                "minimum": 0.0,
+                "maximum": 100,
+                "minimum": 0,
                 "title": "Upper Percentile",
                 "type": "number"
               },
@@ -680,6 +691,11 @@
               "upper_bound": {
                 "title": "Upper Bound",
                 "type": "integer"
+              },
+              "histogram_name": {
+                "default": "channel_histograms",
+                "title": "Histogram Name",
+                "type": "string"
               }
             },
             "title": "CustomNormalizer",
