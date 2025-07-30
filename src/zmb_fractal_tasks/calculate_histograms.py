@@ -51,7 +51,7 @@ def calculate_histograms(
 
     adata = histograms_to_anndata(channel_histos)
     adata.uns["level"] = level
-    generic_table = GenericTable(anndata=adata)
+    generic_table = GenericTable(table_data=adata)
     omezarr.add_table("channel_histograms", generic_table)
 
     if omero_percentiles is not None:

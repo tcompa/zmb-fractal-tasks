@@ -103,7 +103,7 @@ def segment_cellpose_simple(
     # load data
     cellpose_patches = []
     for roi in roi_table.rois():
-        patch = image.get_roi(roi, c=channel_idx)
+        patch = image.get_roi(roi, c=channel_idx, axes_order="czyx")
         cellpose_patches.append(patch[channel_idx, 0])
     # compute segmetnations
     masks = segment_ROIs(
@@ -122,7 +122,7 @@ def segment_cellpose_simple(
             binary = mask > 0
             mask[binary] += max_label
             max_label = mask.max()
-        label_image.set_roi(patch=mask[None, ...], roi=roi)
+        label_image.set_roi(patch=mask[None, None, ...], roi=roi, axes_order="czyx")
 
     # Consolidate the segmentation image
     label_image.consolidate()

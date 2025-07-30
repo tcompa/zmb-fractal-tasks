@@ -64,12 +64,16 @@ def expand_segmentation(
         )
 
     for roi in roi_table.rois():
-        patch = input_label_image.get_roi(roi)
+        patch = input_label_image.get_roi(roi, axes_order="zyx")
         segmentation = expand_labels_ROI(patch, expansion_distance=expansion_distance)
         if save_union:
-            output_label_image_union.set_roi(patch=segmentation, roi=roi)
+            output_label_image_union.set_roi(
+                patch=segmentation, roi=roi, axes_order="zyx"
+            )
         if save_diff:
-            output_label_image_diff.set_roi(patch=segmentation - patch, roi=roi)
+            output_label_image_diff.set_roi(
+                patch=segmentation - patch, roi=roi, axes_order="zyx"
+            )
 
     # Consolidate the segmentation image
     if save_union:
