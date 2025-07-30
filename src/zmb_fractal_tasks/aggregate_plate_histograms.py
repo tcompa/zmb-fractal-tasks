@@ -76,7 +76,7 @@ def aggregate_plate_histograms(
         # write combined histograms to each image in the plate
         adata = histograms_to_anndata(combined_channel_histogram)
         adata.uns["level"] = level
-        generic_table = GenericTable(anndata=adata)
+        generic_table = GenericTable(table_data=adata)
         for zarr_url in plate_zarr_urls:
             omezarr = open_ome_zarr_container(zarr_url)
             omezarr.add_table(histogram_input_name+"_plate", generic_table)
