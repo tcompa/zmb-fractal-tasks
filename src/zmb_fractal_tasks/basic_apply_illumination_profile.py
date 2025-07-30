@@ -65,9 +65,16 @@ def basic_apply_illumination_profile(
             baseline = 0
         # Correct each FOV
         for roi in roi_table.rois():
-            patch = source_image.get_roi(roi, c=channel_idx)
+            patch = source_image.get_roi(
+                roi, c=channel_idx, axes_order=["c","z","y","x"]
+            )
             patch_corrected = correct(patch, flatfield, darkfield, baseline)
-            output_image.set_roi(patch=patch_corrected, roi=roi, c=channel_idx)
+            output_image.set_roi(
+                patch=patch_corrected,
+                roi=roi,
+                c=channel_idx,
+                axes_order=["c","z","y","x"],
+            )
 
     output_image.consolidate()
 

@@ -96,15 +96,15 @@ def measure_features(
     measurements = []
     for roi in roi_table.rois():
         # load label image
-        label_patch = label_image.get_roi(roi, mode="numpy")
+        label_patch = label_image.get_roi(roi, mode="numpy", axes_order="zyx")
         # load annotation label images
         annotation_label_patches = {
-            name: image.get_roi(roi, mode="numpy")
+            name: image.get_roi(roi, mode="numpy", axes_order="zyx")
             for name, image in annotation_label_images.items()
         }
         # load shortest distance label images
         shortest_distance_label_patches = {
-            name: image.get_roi(roi, mode="numpy")
+            name: image.get_roi(roi, mode="numpy", axes_order="zyx")
             for name, image in shortest_distance_label_images.items()
         }
 
@@ -137,7 +137,7 @@ def measure_features(
         for omero_channel in omero_channels:
             channel_idx = intensity_image.channel_labels.index(omero_channel.label)
             intensity_patches[omero_channel.wavelength_id] = intensity_image.get_roi(
-                roi, c=channel_idx, mode="numpy"
+                roi, c=channel_idx, mode="numpy", axes_order="czyx"
             )
 
         measurement = measure_features_ROI(

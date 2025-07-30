@@ -113,7 +113,7 @@ def segment_particles(
 
     max_label = 0
     for roi in roi_table.rois():
-        patch = image.get_roi(roi, c=channel_idx)
+        patch = image.get_roi(roi, c=channel_idx, axes_order="czyx")
         segmentation = segment_ROI(
             patch,
             gaussian_smoothing_sigma=gaussian_smoothing_sigma,
@@ -130,7 +130,7 @@ def segment_particles(
 
         segmentation = segmentation[0]  # drop channel axis TODO: ask if necessary
 
-        label_image.set_roi(patch=segmentation, roi=roi)
+        label_image.set_roi(patch=segmentation, roi=roi, axes_order="zyx")
 
     # Consolidate the segmentation image
     label_image.consolidate()
@@ -206,8 +206,8 @@ def separate_watershed(img, mask, sigma):
     # TODO: There are inconsistencies with the watershed algorithm, if there is
     # anisotropy in xy and z
     if sigma:
-        img_processed = gaussian(img, sigma=sigma)
-        min_distance = sigma
+        img_processed = gaussian(img, sigma=sigma, preserve_range=True).astype('uint16')
+        min_distance = int(np.round(sigma))
     else:
         img_processed = img
         min_distance = 1
