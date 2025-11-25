@@ -3,14 +3,13 @@
 import logging
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 import pandas as pd
 from ngio import open_ome_zarr_container
 from ngio.tables import FeatureTable
 from pydantic import validate_call
-from scipy.ndimage import distance_transform_edt
 
 from zmb_fractal_tasks.from_fractal_tasks_core.channels import (
     ChannelInputModel,
@@ -25,13 +24,14 @@ def measure_features(
     zarr_url: str,
     output_table_name: str,
     label_name: str,
-    channels_to_include: Optional[Sequence[ChannelInputModel]] = None,
-    channels_to_exclude: Optional[Sequence[ChannelInputModel]] = None,
-    structure_props: Optional[Sequence[str]] = None,
-    intensity_props: Optional[Sequence[str]] = None,
+    channels_to_include: Sequence[ChannelInputModel] | None = None,
+    channels_to_exclude: Sequence[ChannelInputModel] | None = None,
+    structure_props: Sequence[str] | None = None,
+    intensity_props: Sequence[str] | None = None,
     level: str = "0",
     roi_table_name: str = "FOV_ROI_table",
-    overwrite: bool = True,
+    append: bool = True,
+    overwrite: bool = False,
 ) -> None:
     """Calculate features based on label image and intensity image (optional).
 
@@ -58,7 +58,9 @@ def measure_features(
         level: Resolution of the label image to calculate features.
             Only tested for level 0.
         roi_table_name: Name of the ROI table to iterate over.
-        overwrite: If True, overwrite existing features in the table.
+        append: If True, append new measurements to existing table.
+        overwrite: Only used if append is False. If True, overwrite existing
+            table. If False, raise error if table already exists.
     """
     omezarr = open_ome_zarr_container(zarr_url)
     label_image = omezarr.get_label(label_name, path=level)
@@ -133,16 +135,26 @@ def measure_features(
         )
         measurements.append(measurement)
 
-    df_measurements = pd.concat(measurements, axis=0, ignore_index=True)
+    df_measurements = pd.concat(measurements, axis=0)
 
-    # if output_table_name in omezarr.list_tables():
-    #     feat_table_org = omezarr.get_table(output_table_name, check_type="feature_table")
-    #     df_org = feat_table_org.table_data.to_df()
+    if append and output_table_name in omezarr.list_tables():
+        feat_table_org = omezarr.get_table(
+            output_table_name, check_type="feature_table"
+        )
+        df_org = feat_table_org.dataframe
+        df_combined = pd.concat([df_org, df_measurements], axis=1)
+        # Remove duplicate columns, keeping the values from df_measurements (rightmost)
+        df_measurements = df_combined.loc[
+            :, ~df_combined.columns.duplicated(keep="last")
+        ]
+
+    if append:
+        overwrite = True
 
     feat_table = FeatureTable(df_measurements, reference_label=label_name)
-    omezarr.add_table(output_table_name, feat_table, overwrite=True)
+    omezarr.add_table(output_table_name, feat_table, overwrite=overwrite)
 
-    # return df_measurements
+    return df_measurements
 
 
 def measure_features_ROI(
@@ -180,7 +192,7 @@ def measure_features_ROI(
 
     # do structure measurements
     if structure_props is None:
-        structure_props = ["num_pixels", ""]
+        structure_props = ["num_pixels", "area"]
     df_struct = pd.DataFrame(
         regionprops_table_plus(
             labels,
@@ -197,7 +209,7 @@ def measure_features_ROI(
     if intensity_props is None:
         intensity_props = ["intensity_mean", "intensity_std", "intensity_total"]
     df_int_list = []
-    for intensities, int_prefix in zip(intensities_list, int_prefix_list):
+    for intensities, int_prefix in zip(intensities_list, int_prefix_list, strict=True):
         df_int = pd.DataFrame(
             regionprops_table_plus(
                 labels,
@@ -220,7 +232,7 @@ def measure_features_ROI(
     # add additional columns:
     for i, (col_name, col_val) in enumerate(optional_columns.items()):
         df.insert(i, col_name, col_val)
-    return df.reset_index()
+    return df
 
 
 if __name__ == "__main__":
