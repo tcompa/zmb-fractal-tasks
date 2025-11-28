@@ -137,15 +137,21 @@ def measure_features(
 
     df_measurements = pd.concat(measurements, axis=0)
 
-    if append and output_table_name in omezarr.list_tables():
+    if append and (output_table_name in omezarr.list_tables()):
         feat_table_org = omezarr.get_table(
             output_table_name, check_type="feature_table"
         )
         df_org = feat_table_org.dataframe
-        df_combined = pd.concat([df_org, df_measurements], axis=1)
-        # Remove duplicate columns, keeping the values from df_measurements (rightmost)
-        df_measurements = df_combined.loc[
-            :, ~df_combined.columns.duplicated(keep="last")
+        # Ensure same index (labels) to avoid misalignment
+        if not df_org.index.equals(df_measurements.index):
+            raise ValueError(
+                "Index mismatch between existing feature table and new measurements."
+            )
+        # Merge horizontally
+        df_measurements = pd.concat([df_org, df_measurements], axis=1)
+        # Remove duplicate columns, keeping the values from new df (rightmost)
+        df_measurements = df_measurements.loc[
+            :, ~df_measurements.columns.duplicated(keep="last")
         ]
 
     if append:
