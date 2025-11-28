@@ -3,7 +3,7 @@
 import logging
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -17,17 +17,16 @@ from zmb_fractal_tasks.from_fractal_tasks_core.channels import (
 )
 from zmb_fractal_tasks.utils.regionprops_table_plus import regionprops_table_plus
 
-
 @validate_call
 def measure_features(
     *,
     zarr_url: str,
     output_table_name: str,
     label_name: str,
-    channels_to_include: Sequence[ChannelInputModel] | None = None,
-    channels_to_exclude: Sequence[ChannelInputModel] | None = None,
-    structure_props: Sequence[str] | None = None,
-    intensity_props: Sequence[str] | None = None,
+    channels_to_include: Optional[Sequence[ChannelInputModel]] = None,
+    channels_to_exclude: Optional[Sequence[ChannelInputModel]] = None,
+    structure_props: Optional[Sequence[str]] = None,
+    intensity_props: Optional[Sequence[str]] = None,
     level: str = "0",
     roi_table_name: str = "FOV_ROI_table",
     append: bool = True,
