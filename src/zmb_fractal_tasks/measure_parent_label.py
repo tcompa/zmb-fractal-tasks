@@ -109,8 +109,6 @@ def measure_parent_label(
     feat_table = FeatureTable(df_measurements, reference_label=label_name)
     omezarr.add_table(output_table_name, feat_table, overwrite=overwrite)
 
-    return df_measurements
-
 
 def measure_parents_ROI(
     labels,
