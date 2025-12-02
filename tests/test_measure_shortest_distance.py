@@ -1,5 +1,5 @@
-from zmb_fractal_tasks.from_fractal_tasks_core.channels import ChannelInputModel
 from zmb_fractal_tasks.measure_shortest_distance import measure_shortest_distance
+
 
 def test_measure_shortest_distance(zarr_MIP_path):
     measure_shortest_distance(

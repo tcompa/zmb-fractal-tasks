@@ -1,5 +1,5 @@
-from zmb_fractal_tasks.from_fractal_tasks_core.channels import ChannelInputModel
 from zmb_fractal_tasks.measure_parent_label import measure_parent_label
+
 
 def test_measure_parent_label(zarr_MIP_path):
     measure_parent_label(

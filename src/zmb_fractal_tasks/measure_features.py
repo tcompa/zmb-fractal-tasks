@@ -17,6 +17,7 @@ from zmb_fractal_tasks.from_fractal_tasks_core.channels import (
 )
 from zmb_fractal_tasks.utils.regionprops_table_plus import regionprops_table_plus
 
+
 @validate_call
 def measure_features(
     *,
